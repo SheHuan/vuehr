@@ -20,23 +20,23 @@ const routes = [
         component: Home,
         hidden: true
     },
-    {
-        path: '/home',
-        name: 'Home',
-        component: Home,
-        children: [
-            {
-                path: '/test1',
-                name: 'Test1',
-                component: Test1
-            },
-            {
-                path: '/test2',
-                name: 'Test2',
-                component: Test2
-            }
-        ]
-    }
+    // {
+    //     path: '/home',
+    //     name: 'Home',
+    //     component: Home,
+    //     children: [
+    //         {
+    //             path: '/test1',
+    //             name: 'Test1',
+    //             component: Test1
+    //         },
+    //         {
+    //             path: '/test2',
+    //             name: 'Test2',
+    //             component: Test2
+    //         }
+    //     ]
+    // }
     // {
     //   path: '/about',
     //   name: 'About',

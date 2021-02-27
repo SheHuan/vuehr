@@ -1,0 +1,14 @@
+<!--员工调动-->
+<template>
+
+</template>
+
+<script>
+export default {
+name: "PerMv"
+}
+</script>
+
+<style scoped>
+
+</style>

@@ -1,0 +1,14 @@
+<!--基础信息设置-->
+<template>
+
+</template>
+
+<script>
+export default {
+name: "SysBasic"
+}
+</script>
+
+<style scoped>
+
+</style>
