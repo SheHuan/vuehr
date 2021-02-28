@@ -23,12 +23,21 @@ Vue.use(ElementUI);
 router.beforeEach((to, from, next) => {
     console.log(to);
     console.log(from);
+    // 去的是登录页面
     if (to.path === '/') {
         next();
     } else {
-        // 开加载菜单数据的逻辑
-        initMenu(router, store);
-        next()
+        // 已经登录
+        if (window.sessionStorage.getItem('user')) {
+            // 开加载菜单数据的逻辑
+            initMenu(router, store);
+            next();
+        } else {
+            // 跳转到登录页
+            // 这里会记录是从哪个页面跳转到登录页的，以便登录成功后重定向到该页面，而不是直接到home页面
+            let path = to.path;
+            next('/?redirect=' + path);
+        }
     }
 })
 

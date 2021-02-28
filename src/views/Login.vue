@@ -6,7 +6,8 @@
         <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="请输入用户名"></el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="请输入密码" @keydown.enter.native='submitLogin'></el-input>
+        <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="请输入密码"
+                  @keydown.enter.native='submitLogin'></el-input>
       </el-form-item>
       <el-checkbox v-model="checked"></el-checkbox>
       <el-button type="primary" class="login-button" @click="submitLogin">登录</el-button>
@@ -37,7 +38,10 @@ export default {
           this.postKeyValueRequest('/doLogin', this.loginForm).then(resp => {
             if (resp) {
               window.sessionStorage.setItem('user', JSON.stringify(resp.obj))
-              this.$router.replace('/home')
+              // 获得登录时携带的重定向地址
+              let path = this.$route.query.redirect;
+              // 登录成功后跳转到首页或者指定地页面
+              this.$router.replace((path === '/' || path === undefined) ? '/home' : path)
             }
           })
         } else {
