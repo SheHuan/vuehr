@@ -43,12 +43,10 @@ function formatRoutes(routes) {
 }
 
 export const initMenu = (router, store) => {
-    console.log('xxxxxxxxxxxxxxxxxxxxxx')
     // 已经有菜单数据了
     if (store.state.routes.length > 0) {
         return;
     }
-    console.log('yyyyyyyyyyyyyyyyyyyyy')
     getRequest('/system/config/menu').then(data => {
         if (data) {
             let fmRoutes = formatRoutes(data);

@@ -39,6 +39,14 @@
             label="创建时间"
             width="200">
         </el-table-column>
+        <el-table-column
+            label="是否启用"
+            width="150">
+          <template slot-scope="scope">
+            <el-tag type="success" size="small" v-if="scope.row.enabled">已启用</el-tag>
+            <el-tag type="danger" size="small" v-else>未启用</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
@@ -67,6 +75,13 @@
         <el-form-item prop="name" label="职位名称">
           <el-input v-model="updatePos.name" size="small"></el-input>
         </el-form-item>
+        <el-form-item prop="enabled" label="是否启用">
+          <el-switch
+              v-model="updatePos.enabled"
+              active-text="启用"
+              inactive-text="禁用">
+          </el-switch>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -77,8 +92,6 @@
 </template>
 
 <script>
-import qs from "qs";
-
 export default {
   name: "PosMana",
   data() {
@@ -91,7 +104,8 @@ export default {
       dialogVisible: false,
       // 编辑的职位数据
       updatePos: {
-        name: ''
+        name: '',
+        enabled: false
       },
       rules: {
         name: [{required: true, message: "请输入新的职位名称", trigger: "blur"}],

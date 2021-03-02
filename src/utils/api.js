@@ -4,7 +4,7 @@ import {Message} from 'element-ui'
 // 响应拦截器
 axios.interceptors.response
     .use(success => {
-        if (success.status && success.status == 200 && success.data.status == 500) {
+        if (success.status && success.status === 200 && success.data.status === 500) {
             Message.error({message: success.data.msg})
             return;
         }
@@ -13,11 +13,11 @@ axios.interceptors.response
         }
         return success.data;
     }, error => {
-        if (error.response.status == 504 || error.response.status == 404) {
+        if (error.response.status === 504 || error.response.status === 404) {
             Message.error('服务器被吃了o(╯□╰)o')
-        } else if (error.response.status == 403) {
+        } else if (error.response.status === 403) {
             Message.error('权限不足，请联系管理员')
-        } else if (error.response.status == 401) {
+        } else if (error.response.status === 401) {
             Message.error('尚未登录，请登录')
         } else {
             if (error.response.data.msg) {
