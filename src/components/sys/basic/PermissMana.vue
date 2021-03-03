@@ -9,7 +9,7 @@
       <el-button type="primary" size="small" icon="el-icon-plus">添加角色</el-button>
     </div>
     <div class="role-collapse">
-      <el-collapse accordion @change="change">
+      <el-collapse v-model="activeName" accordion @change="change">
         <el-collapse-item :title="item.nameZh" :name="item.id" v-for="(item, index) in roles" :key="index">
           <el-card class="box-card">
             <div slot="header" class="clearfix">
@@ -17,7 +17,19 @@
               <el-button style="float: right; padding: 3px 0; color: red" icon="el-icon-delete" type="text"></el-button>
             </div>
             <div>
-              <el-tree show-checkbox :data="allMenus" :props="defaultProps"></el-tree>
+              <!--ref="tree"表示当前组件的名称，可以用来查找组件-->
+              <el-tree show-checkbox
+                       :data="allMenus"
+                       :props="defaultProps"
+                       node-key="id"
+                       :default-checked-keys="checkedMenus"
+                       ref="tree">
+              </el-tree>
+
+              <div class="button-group">
+                <el-button size="mini" @click="activeName=-1">取消修改</el-button>
+                <el-button size="mini" type="primary" @click="doUpdate(item.id,index)">确认修改</el-button>
+              </div>
             </div>
           </el-card>
         </el-collapse-item>
@@ -36,11 +48,15 @@ export default {
         nameZh: ''
       },
       roles: [],
+      activeName: -1,
+      // 全部menu
       allMenus: null,
       defaultProps: {
         children: 'children',
         label: 'name'
-      }
+      },
+      // 选中的menu
+      checkedMenus: []
     }
   },
   mounted() {
@@ -49,9 +65,10 @@ export default {
   },
   methods: {
     // 打开折叠面板
-    change(name) {
-      if (name) {
+    change(roleId) {
+      if (roleId) {
         this.initAllMenus();
+        this.initCheckedMenu(roleId);
       }
     },
     initRoles() {
@@ -65,6 +82,29 @@ export default {
       this.getRequest('/system/basic/permiss/menus').then(resp => {
         if (resp) {
           this.allMenus = resp;
+        }
+      })
+    },
+    initCheckedMenu(roleId) {
+      this.getRequest('/system/basic/permiss/mids/' + roleId).then(resp => {
+        console.log(1111)
+        if (resp) {
+          console.log(2222)
+          this.checkedMenus = resp;
+        }
+      })
+    },
+    // index表示列表中第几个角色
+    doUpdate(roleId, index) {
+      let tree = this.$refs.tree[index];
+      let checkedKeys = tree.getCheckedKeys(true);
+      let url = '/system/basic/permiss/?roleId=' + roleId;
+      checkedKeys.forEach(key => {
+        url += '&menuIds=' + key;
+      });
+      this.putRequest(url).then(resp => {
+        if (resp) {
+          this.activeName = -1;
         }
       })
     }
@@ -91,5 +131,11 @@ export default {
 .role-collapse {
   margin-top: 10px;
   width: 900px;
+}
+
+.button-group {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
 }
 </style>
