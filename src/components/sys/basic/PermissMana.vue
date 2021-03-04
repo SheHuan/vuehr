@@ -6,7 +6,7 @@
         <template slot="prepend">ROLE_</template>
       </el-input>
       <el-input class="namezh-input" size="small" placeholder="请输入角色中文名称" v-model="role.nameZh"></el-input>
-      <el-button type="primary" size="small" icon="el-icon-plus">添加角色</el-button>
+      <el-button type="primary" size="small" icon="el-icon-plus" @click="addRole">添加角色</el-button>
     </div>
     <div class="role-collapse">
       <el-collapse v-model="activeName" accordion @change="change">
@@ -18,16 +18,18 @@
             </div>
             <div>
               <!--ref="tree"表示当前组件的名称，可以用来查找组件-->
+              <!--防止不同树中数据错乱-->
               <el-tree show-checkbox
                        :data="allMenus"
                        :props="defaultProps"
+                       :key="index"
                        node-key="id"
                        :default-checked-keys="checkedMenus"
                        ref="tree">
               </el-tree>
 
               <div class="button-group">
-                <el-button size="mini" @click="activeName=-1">取消修改</el-button>
+                <el-button size="mini" @click="closeCollapse">取消修改</el-button>
                 <el-button size="mini" type="primary" @click="doUpdate(item.id,index)">确认修改</el-button>
               </div>
             </div>
@@ -64,11 +66,15 @@ export default {
     this.initRoles();
   },
   methods: {
-    // 打开折叠面板
     change(roleId) {
+      // 打开折叠面板
       if (roleId) {
         this.initAllMenus();
         this.initCheckedMenu(roleId);
+      } else {
+        // 关闭折叠面板
+        // 由于所有树共有相同的数据源，为优化体验，先清空已选中的menu
+        // this.checkedMenus = []
       }
     },
     initRoles() {
@@ -87,9 +93,7 @@ export default {
     },
     initCheckedMenu(roleId) {
       this.getRequest('/system/basic/permiss/mids/' + roleId).then(resp => {
-        console.log(1111)
         if (resp) {
-          console.log(2222)
           this.checkedMenus = resp;
         }
       })
@@ -104,7 +108,23 @@ export default {
       });
       this.putRequest(url).then(resp => {
         if (resp) {
-          this.activeName = -1;
+          this.closeCollapse();
+        }
+      })
+    },
+    closeCollapse() {
+      this.activeName = -1
+    },
+    addRole() {
+      if (!this.role.name || !this.role.nameZh) {
+        this.$message.error('请完善角色信息！');
+        return;
+      }
+      this.postRequest('/system/basic/permiss/role', this.role).then(resp => {
+        if (resp) {
+          this.role.name = '';
+          this.role.nameZh = '';
+          this.initRoles();
         }
       })
     }
