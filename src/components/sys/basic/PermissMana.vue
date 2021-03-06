@@ -14,7 +14,8 @@
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>可访问的资源</span>
-              <el-button style="float: right; padding: 3px 0; color: red" icon="el-icon-delete" type="text"></el-button>
+              <el-button style="float: right; padding: 3px 0; color: red" icon="el-icon-delete" type="text"
+                         @click="deleteRole(item)"></el-button>
             </div>
             <div>
               <!--ref="tree"表示当前组件的名称，可以用来查找组件-->
@@ -127,6 +128,24 @@ export default {
           this.initRoles();
         }
       })
+    },
+    deleteRole(role) {
+      this.$confirm('此操作将永久删除【' + role.nameZh + '】角色, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteRequest('/system/basic/permiss/role/' + role.id).then(resp => {
+          if (resp) {
+            this.initRoles();
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        });
+      });
     }
   }
 }
