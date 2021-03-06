@@ -1,29 +1,32 @@
 import axios from 'axios';
 import {Message} from 'element-ui'
+import router from "../router";
 
 // 响应拦截器
 axios.interceptors.response
     .use(success => {
         if (success.status && success.status === 200 && success.data.status === 500) {
-            Message.error({message: success.data.msg})
+            Message.error({message: success.data.msg});
             return;
         }
         if (success.data.msg) {
-            Message.success(success.data.msg)
+            Message.success(success.data.msg);
         }
         return success.data;
     }, error => {
         if (error.response.status === 504 || error.response.status === 404) {
-            Message.error('服务器被吃了o(╯□╰)o')
+            Message.error('服务器被吃了o(╯□╰)o');
         } else if (error.response.status === 403) {
-            Message.error('权限不足，请联系管理员')
+            Message.error('权限不足，请联系管理员');
         } else if (error.response.status === 401) {
-            Message.error('尚未登录，请登录')
+            // 前端session不可用时跳转到登录页面（session正常过期、后端重启）
+            Message.error('尚未登录，请先登录');
+            router.replace('/');
         } else {
             if (error.response.data.msg) {
-                Message.error(error.response.data.msg)
+                Message.error(error.response.data.msg);
             } else {
-                Message.error('未知错误')
+                Message.error('未知错误');
             }
         }
         return;
