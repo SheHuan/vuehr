@@ -13,7 +13,7 @@
     <el-tab-pane label="奖惩规则" name="fourth">
       <EcMana></EcMana>
     </el-tab-pane>
-    <el-tab-pane label="权限组" name="fourth2">
+    <el-tab-pane label="权限组" name="fifth">
       <PermissMana></PermissMana>
     </el-tab-pane>
   </el-tabs>
