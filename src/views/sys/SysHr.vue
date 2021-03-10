@@ -17,7 +17,6 @@
           <el-image
               class="user-face"
               :src="hr.userface"
-              :fit="fill"
               :alt="hr.name">
           </el-image>
           <div class="hr-info-content">
@@ -27,14 +26,33 @@
             <div>地址：{{ hr.address }}</div>
             <div>状态：
               <el-switch
+                  @change="enableChange(hr)"
                   v-model="hr.enabled"
-                  active-text="禁用"
-                  inactive-text="启用">
+                  active-text="启用"
+                  inactive-text="禁用">
               </el-switch>
             </div>
             <div>角色：
-              <el-tag class="hr-role" size="mini" type="success" v-for="(role ,index2) in hr.roles" :key="index2">{{ role.nameZh }}
-              </el-tag><el-button icon="el-icon-more" size="mini" type="text"></el-button>
+              <el-tag class="hr-role" size="mini" type="success" v-for="(role ,index2) in hr.roles" :key="index2">
+                {{ role.nameZh }}
+              </el-tag>
+              <el-popover
+                  placement="bottom"
+                  title="角色列表"
+                  width="200"
+                  trigger="click"
+                  @show="showPop(hr.roles)"
+                  @hide="hidePop(hr)">
+                <el-select v-model="selectedRoles" multiple placeholder="请选择">
+                  <el-option
+                      v-for="(role, index) in allRoles"
+                      :key="index"
+                      :label="role.nameZh"
+                      :value="role.id">
+                  </el-option>
+                </el-select>
+                <el-button icon="el-icon-more" slot="reference" size="mini" type="text"></el-button>
+              </el-popover>
             </div>
           </div>
         </div>
@@ -49,7 +67,9 @@ export default {
   data() {
     return {
       keyword: '',
-      hrs: []
+      hrs: [],
+      allRoles: [],
+      selectedRoles: []
     }
   },
   mounted() {
@@ -68,6 +88,39 @@ export default {
     },
     deleteHr(id) {
 
+    },
+    enableChange(hr) {
+      console.log(hr)
+      this.putRequest('/system/hr/', hr).then(resp => {
+        if (resp) {
+          this.initHrs();
+        }
+      })
+    },
+    initAllRoles() {
+      this.getRequest('/system/hr/role').then(resp => {
+        if (resp) {
+          this.allRoles = resp;
+        }
+      })
+    },
+    showPop(roles) {
+      this.selectedRoles = []
+      this.initAllRoles();
+      roles.forEach(r => {
+        this.selectedRoles.push(r.id)
+      })
+    },
+    hidePop(hr) {
+      let url = '/system/hr/role?hrid=' + hr.id;
+      this.selectedRoles.forEach(r => {
+        url += '&rids=' + r
+      });
+      this.putRequest(url).then(resp => {
+        if (resp) {
+          this.initHrs();
+        }
+      })
     }
   }
 }
@@ -110,7 +163,7 @@ export default {
   color: #409eff;
 }
 
-.hr-role{
+.hr-role {
   margin-right: 4px;
 }
 
