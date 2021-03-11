@@ -1,6 +1,12 @@
 <template>
   <div>
-    <el-form :rules="rules" ref="loginForm" v-bind:model="loginForm" class="login-container">
+    <el-form
+        :rules="rules"
+        ref="loginForm"
+        v-bind:model="loginForm"
+        class="login-container"
+        v-loading="loading"
+        element-loading-text="正在登陆...">
       <h3 class="login-title">系统登录</h3>
       <el-form-item prop="username">
         <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="请输入用户名"></el-input>
@@ -28,14 +34,17 @@ export default {
         username: "admin",
         password: "123"
       },
-      checked: true
+      checked: true,
+      loading: false
     }
   },
   methods: {
     submitLogin() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
+          this.loading = true;
           this.postKeyValueRequest('/doLogin', this.loginForm).then(resp => {
+            this.loading = false;
             if (resp) {
               window.sessionStorage.setItem('user', JSON.stringify(resp.obj))
               // 获得登录时携带的重定向地址
@@ -43,6 +52,8 @@ export default {
               // 登录成功后跳转到首页或者指定地页面
               this.$router.replace((path === '/' || path === undefined) ? '/home' : path)
             }
+          }).finally(() => {
+            this.loading = false;
           })
         } else {
           this.$message.error('请输入所有字段！')
