@@ -3,7 +3,7 @@
   <div>
     <div class="search-container">
       <el-input class="search-input" v-model="keyword" placeholder="请输入用户名称..." size="small"
-                prefix-icon="el-icon-search"></el-input>
+                prefix-icon="el-icon-search" @keydown.enter.native="searchHr"></el-input>
       <el-button type="primary" icon="el-icon-search" size="small" @click="searchHr">搜索</el-button>
     </div>
     <div class="hr-container">
@@ -11,7 +11,7 @@
         <div slot="header" class="clearfix">
           <span>{{ hr.name }}</span>
           <el-button style="float: right; padding: 3px 0; color: red" type="text" icon="el-icon-delete"
-                     @click="deletHr(hr.id)"></el-button>
+                     @click="deleteHr(hr)"></el-button>
         </div>
         <div>
           <el-image
@@ -77,17 +77,32 @@ export default {
   },
   methods: {
     searchHr() {
-
+      this.initHrs()
     },
     initHrs() {
-      this.getRequest('/system/hr/').then(resp => {
+      this.getRequest('/system/hr/?keyword=' + this.keyword).then(resp => {
         if (resp) {
           this.hrs = resp;
         }
       })
     },
-    deleteHr(id) {
-
+    deleteHr(hr) {
+      this.$confirm('此操作将永久删除【' + hr.name + '】, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteRequest('/system/hr/' + hr.id).then(resp => {
+          if (resp) {
+            this.initHrs();
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        });
+      });
     },
     enableChange(hr) {
       console.log(hr)
@@ -112,6 +127,15 @@ export default {
       })
     },
     hidePop(hr) {
+      let oldRoleIds = hr.roles.map(r => {
+        return r.id;
+      });
+
+      // 没有修改就不更新了
+      if (oldRoleIds.sort().toString() === this.selectedRoles.sort().toString()) {
+        return;
+      }
+
       let url = '/system/hr/role?hrid=' + hr.id;
       this.selectedRoles.forEach(r => {
         url += '&rids=' + r
