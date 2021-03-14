@@ -112,7 +112,7 @@ export default {
       }).then(() => {
         this.deleteRequest('/system/basic/department/' + data.parentId + '/' + data.id).then(resp => {
           if (resp) {
-            this.deleteDepFromDeps(this.allDepartments, data.id);
+            this.deleteDepFromDeps(null, this.allDepartments, data.id);
           }
         })
       }).catch(() => {
@@ -142,20 +142,26 @@ export default {
         let d = deps[i];
         if (d.id === dep.parentId) {
           d.children = d.children.concat(dep);
+          if (d.children.length > 0) {
+            d.isParent = true;
+          }
           return;
         } else {
           this.addDepToDeps(d.children, dep);
         }
       }
     },
-    deleteDepFromDeps(deps, id) {
+    deleteDepFromDeps(p, deps, id) {
       for (let i = 0; i < deps.length; i++) {
         let d = deps[i];
         if (d.id === id) {
           deps.splice(i, 1);
+          if (deps.length === 0 && p) {
+            p.isParent = false;
+          }
           return;
         } else {
-          this.deleteDepFromDeps(d.children, id);
+          this.deleteDepFromDeps(d, d.children, id);
         }
       }
     }
