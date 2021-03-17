@@ -11,12 +11,19 @@
         </el-button>
       </div>
       <div>
-        <el-button type="success" size="small">
-          <i class="fa fa-level-up"></i>导入数据
-        </el-button>
-        <el-button type="success" size="small">
-          <i class="fa fa-level-down"></i>导出数据
-        </el-button>
+        <el-upload
+            style="display: inline-block; margin-right: 10px"
+            action="/employee/basic/import"
+            :before-upload="beforeUpload"
+            :on-success="uploadSuccess"
+            :on-error="uploadError"
+            :disabled="importButtonDisabled"
+            :show-file-list="false">
+          <el-button type="success" size="small" :disabled="importButtonDisabled" :icon="importButtonIcon">
+            {{ importButtonText }}
+          </el-button>
+        </el-upload>
+        <el-button type="success" size="small" icon="el-icon-download" @click="exportData">导出数据</el-button>
         <el-button type="primary" icon="el-icon-plus" size="small" @click="showAddEmpDialog">添加员工</el-button>
       </div>
     </div>
@@ -36,6 +43,13 @@
         <el-table-column
             prop="name"
             label="姓名"
+            fixed
+            align="left"
+            width="100">
+        </el-table-column>
+        <el-table-column
+            prop="gender"
+            label="性别"
             fixed
             align="left"
             width="100">
@@ -147,6 +161,18 @@
           <template slot-scope="scope">
             {{ scope.row.contractTerm }}年
           </template>
+        </el-table-column>
+        <el-table-column
+            prop="school"
+            label="毕业院校"
+            align="left"
+            width="150">
+        </el-table-column>
+        <el-table-column
+            prop="specialty"
+            label="专业"
+            align="left"
+            width="150">
         </el-table-column>
         <el-table-column
             prop="tiptopDegree"
@@ -515,7 +541,10 @@ export default {
         children: 'children',
         label: 'name'
       },
-      currentEmpName: '请选择部门'
+      currentEmpName: '请选择部门',
+      importButtonText: '导入数据',
+      importButtonIcon: 'el-icon-upload2',
+      importButtonDisabled: false
     }
   },
   mounted() {
@@ -716,6 +745,25 @@ export default {
     closeEmployeeDialog() {
       this.depViewVisible = false;
       this.emptyEmployee();
+    },
+    exportData() {
+      window.open("/employee/basic/export", "_parent")
+    },
+    beforeUpload() {
+      this.importButtonText = '正在导入';
+      this.importButtonIcon = 'el-icon-loading';
+      this.importButtonDisabled = true;
+    },
+    uploadSuccess(response, file, fileList) {
+      this.importButtonText = '导入数据';
+      this.importButtonIcon = 'el-icon-upload2';
+      this.importButtonDisabled = false;
+      this.initEmps();
+    },
+    uploadError(err, file, fileList) {
+      this.importButtonText = '导入数据';
+      this.importButtonIcon = 'el-icon-upload2';
+      this.importButtonDisabled = false;
     }
   }
 }
