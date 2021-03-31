@@ -100,7 +100,7 @@
               </div>
               <el-tag>{{ scope.row.salary.name }}</el-tag>
             </el-tooltip>
-            <el-tag v-else>暂未设置工资账套</el-tag>
+            <el-tag v-else>暂未设置</el-tag>
           </template>
         </el-table-column>
         <el-table-column
@@ -108,11 +108,27 @@
             fixed="right"
             width="300">
           <template slot-scope="scope">
-            <el-button
-                size="mini"
-                type="danger"
-                @click="editEmployeeSalary(scope.row)">修改账套
-            </el-button>
+            <el-popover
+                placement="left"
+                title="修改工资账套"
+                width="200"
+                @hide="hidePop(scope.row)"
+                @show="showPop(scope.row.salary)"
+                trigger="click">
+              <el-select v-model="currentSalaryId" placeholder="请选择" size="mini">
+                <el-option
+                    v-for="item in salaries"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                </el-option>
+              </el-select>
+              <el-button
+                  slot="reference"
+                  size="mini"
+                  type="danger">修改账套
+              </el-button>
+            </el-popover>
           </template>
         </el-table-column>
       </el-table>
@@ -138,11 +154,14 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: 0,
-      emps: []
+      emps: [],
+      salaries: [],
+      currentSalaryId: null
     }
   },
   mounted() {
     this.initEmps();
+    this.initSalaries();
   },
   methods: {
     initEmps() {
@@ -164,6 +183,30 @@ export default {
       this.pageNum = currentPage;
       this.initEmps();
     },
+    initSalaries() {
+      this.getRequest("/salary/sobcfg/salaries").then(resp => {
+        if (resp) {
+          this.salaries = resp;
+        }
+      })
+    },
+    showPop(salary) {
+      if (salary) {
+        this.currentSalaryId = salary.id;
+      } else {
+        this.currentSalaryId = null;
+      }
+    },
+    hidePop(emp) {
+      if (this.currentSalaryId) {
+        this.putRequest("/salary/sobcfg/?empId=" + emp.id
+            + "&salaryId=" + this.currentSalaryId).then(resp => {
+          if (resp) {
+            this.initEmps();
+          }
+        })
+      }
+    }
   }
 }
 </script>
