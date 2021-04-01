@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/Login'
 import Home from '../views/Home'
+import FriendChat from "@/views/chat/FriendChat";
 import Test1 from "../views/Test1";
 import Test2 from "../views/Test2";
 
@@ -18,7 +19,15 @@ const routes = [
         path: '/home',
         name: 'Home',
         component: Home,
-        hidden: true
+        hidden: true,
+        children: [
+            {
+                path: '/chat',
+                name: '在线聊天',
+                component: FriendChat,
+                hidden: true
+            }
+        ]
     },
     // {
     //     path: '/home',

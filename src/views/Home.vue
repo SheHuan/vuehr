@@ -3,16 +3,19 @@
     <el-container>
       <el-header class="home-header">
         <div class="title">微人事</div>
-        <el-dropdown class="user-info" @command="handleCommand">
-        <span class="el-dropdown-link">
-          {{ user.name }}<i><img :src="user.userface" alt=""></i>
-        </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command='userinfo'>个人中心</el-dropdown-item>
-            <el-dropdown-item command='setting'>设置</el-dropdown-item>
-            <el-dropdown-item command='logout' divided>注销登录</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+        <div>
+          <el-button icon="el-icon-bell" type="text" class="chat-btn" @click="goChat"></el-button>
+          <el-dropdown class="user-info" @command="handleCommand">
+          <span class="el-dropdown-link">
+            {{ user.name }}<i><img :src="user.userface" alt=""></i>
+          </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command='userinfo'>个人中心</el-dropdown-item>
+              <el-dropdown-item command='setting'>设置</el-dropdown-item>
+              <el-dropdown-item command='logout' divided>注销登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
       </el-header>
       <el-container>
         <el-aside width="200px">
@@ -75,6 +78,9 @@ export default {
         });
       }
     },
+    goChat() {
+      this.$router.push('/chat');
+    }
     // 菜单跳转
     // menuClick(index, indexPath) {
     //   console.log(index);
@@ -135,7 +141,12 @@ export default {
   color: #409eff;
 }
 
-.home-router-view{
+.home-router-view {
   margin-top: 15px;
+}
+
+.chat-btn {
+  margin-right: 10px;
+  color: white
 }
 </style>
