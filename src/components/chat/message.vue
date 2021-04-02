@@ -1,6 +1,6 @@
 <template>
-  <div id="message" v-scroll-bottom="session">
-    <ul v-if="currentSessionId==item.id" v-for="item in sessions">
+  <div id="message" v-scroll-bottom>
+    <ul v-if="currentSessionId===item.id" v-for="item in sessions">
       <li v-for="entry in item.messages">
         <p class="time">
           <span>{{ entry.date | time }}</span>
@@ -94,6 +94,8 @@ export default {
       background-color: #fafafa;
       border-radius: 4px;
       line-height: 30px;
+      margin: 0;
+      white-space: pre-line;
     }
   }
 
@@ -115,6 +117,7 @@ export default {
       background-color: #b2e281;
       border-radius: 4px;
       line-height: 30px;
+      margin: 0;
     }
   }
 }

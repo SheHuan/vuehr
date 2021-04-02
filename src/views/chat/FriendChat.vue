@@ -19,10 +19,8 @@ import usertext from '../../components/chat/usertext.vue'
 
 export default {
   name: "FriendChat",
-  data () {
-    return {
-
-    }
+  data() {
+    return {}
   },
   mounted: function () {
     this.$store.dispatch('initData');
@@ -46,12 +44,14 @@ export default {
   .sidebar, .main {
     height: 100%;
   }
+
   .sidebar {
     float: left;
     color: #f4f4f4;
     background-color: #2e3238;
     width: 200px;
   }
+
   .main {
     position: relative;
     overflow: hidden;
