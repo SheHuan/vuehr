@@ -55,6 +55,8 @@ export const initMenu = (router, store) => {
             })
             // 更新vuex中的菜单数据，store/index.js
             store.commit('initRoutes', fmRoutes)
+            // 初始化websocket连接
+            store.dispatch('connect');
         }
     })
 }

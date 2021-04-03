@@ -1,10 +1,10 @@
 <template>
   <div id="list">
     <ul style="padding-left: 0">
-      <li v-for="item in sessions" :class="{ active: item.id === currentSessionId }"
-          v-on:click="changeCurrentSessionId(item.id)"><!--   :class="[item.id === currentSessionId ? 'active':'']" -->
-        <img class="avatar" :src="item.user.img" :alt="item.user.name">
-        <p class="name">{{ item.user.name }}</p>
+      <li v-for="item in hrs" :class="{ active: destChatUser?item.username === destChatUser.username:false }"
+          v-on:click="changeDestChatUser(item)">
+        <img class="avatar" :src="item.userface" :alt="item.name">
+        <el-badge :is-dot="isDot[currentHr.username+'#'+ item.username]"><p class="name">{{ item.name }}</p></el-badge>
       </li>
     </ul>
   </div>
@@ -19,12 +19,14 @@ export default {
     return {}
   },
   computed: mapState([
-    'sessions',
-    'currentSessionId'
+    'hrs',
+    'currentHr',
+    'isDot',
+    'destChatUser'
   ]),
   methods: {
-    changeCurrentSessionId: function (id) {
-      this.$store.commit('changeCurrentSessionId', id)
+    changeDestChatUser: function (session) {
+      this.$store.commit('changeDestChatUser', session)
     }
   }
 }
@@ -33,7 +35,7 @@ export default {
 <style lang="scss" scoped>
 #list {
   li {
-    padding: 0 15px;
+    padding: 15px 15px;
     border-bottom: 1px solid #292C33;
     cursor: pointer;
     list-style: none;
@@ -56,7 +58,7 @@ export default {
 
   .name {
     display: inline-block;
-    margin-left: 15px;
+    margin: 0 15px 0 0;
   }
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
   <div id="uesrtext">
-    <textarea autofocus v-model="content" v-on:keyup="addMessage"></textarea>
+    <textarea autofocus v-model="content" v-on:keyup="sendMessage1"></textarea>
     <div>
       <span>Enter发送，Ctrl + Enter换行</span>
       <button :disabled="content.length===0"
-              v-bind:class="content.length===0?'btn-disable':'btn-enable'" @click="sendMessage">发送
+              v-bind:class="content.length===0?'btn-disable':'btn-enable'" @click="sendMessage2">发送
       </button>
     </div>
   </div>
@@ -20,19 +20,26 @@ export default {
       content: ''
     }
   },
+  computed: mapState([
+    'destChatUser'
+  ]),
   methods: {
-    addMessage(e) {
+    sendMessage1(e) {
       if (e.ctrlKey && e.keyCode === 13 && this.content.length) {
         this.content += '\r\n';
         return;
       }
 
       if (e.keyCode === 13 && this.content.length) {
-        this.sendMessage();
+        this.sendMessage2();
       }
     },
-    sendMessage() {
-      this.$store.commit('addMessage', this.content);
+    sendMessage2() {
+      let msg = {};
+      msg.to = this.destChatUser.username;
+      msg.content = this.content;
+      this.$store.state.stomp.send('/ws/chat', {}, JSON.stringify(msg));
+      this.$store.commit('addMessage', msg);
       this.content = '';
     }
   }
