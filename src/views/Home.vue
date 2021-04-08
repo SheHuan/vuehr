@@ -53,7 +53,7 @@ export default {
   name: "Home",
   data() {
     return {
-      user: JSON.parse(window.sessionStorage.getItem('user'))
+      // user: JSON.parse(window.sessionStorage.getItem('user'))
     }
   },
   methods: {
@@ -76,6 +76,8 @@ export default {
             message: '已取消操作'
           });
         });
+      } else if ('userinfo' === command) {
+        this.$router.push('/hrInfo')
       }
     },
     goChat() {
@@ -91,6 +93,9 @@ export default {
     // 返回vuex中保存的菜单数据
     routes() {
       return this.$store.state.routes;
+    },
+    user() {
+      return this.$store.state.currentHr;
     }
   }
 }

@@ -6,6 +6,7 @@ import Stomp from 'stompjs'
 
 import {Notification} from 'element-ui';
 import fa from "element-ui/src/locale/lang/fa";
+import da from "element-ui/src/locale/lang/da";
 
 Vue.use(Vuex)
 
@@ -58,6 +59,9 @@ const store = new Vuex.Store({
         INIT_HR(state, data) {
             state.hrs = data;
             state.destChatUser = data[0];
+        },
+        INIT_CURRENT_HR(state, data) {
+            state.currentHr = data;
         }
     },
     actions: {

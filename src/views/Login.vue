@@ -15,9 +15,11 @@
         <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="请输入密码"></el-input>
       </el-form-item>
       <el-form-item prop="code">
-        <el-input type="text" v-model="loginForm.code" auto-complete="off" placeholder="请输入验证码"
-                  @keydown.enter.native='submitLogin' style="width: 200px"></el-input>
-        <img :src="codeUrl" @click="updateVerifyCode" style="width: 100px; height: 30px">
+        <div class="code-item">
+          <el-input type="text" v-model="loginForm.code" auto-complete="off" placeholder="请输入验证码"
+                    @keydown.enter.native='submitLogin' style="width: 200px"></el-input>
+          <img :src="codeUrl" @click="updateVerifyCode" style="width: 100px; height: 30px">
+        </div>
       </el-form-item>
       <el-checkbox v-model="checked"></el-checkbox>
       <el-button type="primary" class="login-button" @click="submitLogin">登录</el-button>
@@ -100,7 +102,7 @@ export default {
   margin-top: 15px;
 }
 
-.el-form-item__content {
+.code-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
