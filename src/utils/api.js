@@ -1,4 +1,5 @@
 import axios from 'axios';
+import qs from 'qs'
 import {Message} from 'element-ui'
 import router from "../router";
 
@@ -38,15 +39,15 @@ export const postKeyValueRequest = (url, params) => {
     return axios({
         method: 'post',
         url: `${base}${url}`,
-        data: params,
-        transformRequest: [function (data) {
-            // 数据默认会以json格式传递，需要转成key-value
-            let ret = '';
-            for (let i in data) {
-                ret += encodeURIComponent(i) + '=' + encodeURIComponent(data[i]) + '&'
-            }
-            return ret;
-        }],
+        data: qs.stringify(params),
+        // transformRequest: [function (data) {
+        //     // 数据默认会以json格式传递，需要转成key-value
+        //     let ret = '';
+        //     for (let i in data) {
+        //         ret += encodeURIComponent(i) + '=' + encodeURIComponent(data[i]) + '&'
+        //     }
+        //     return ret;
+        // }],
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     })
 }
